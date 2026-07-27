@@ -41,6 +41,9 @@ var deploymentName = app.Configuration["AZURE_OPENAI_DEPLOYMENT_NAME"]
     "Return the computer hostname. This read-only operation still requires explicit human approval for the demo.")]
 static string GetHostname() => Environment.MachineName;
 
+static string MaskAfterFourCharacters(string value) =>
+    value.Length <= 4 ? value : value[..4] + new string('*', value.Length - 4);
+
 [Description(
     "Return the current Windows username. This read-only operation still requires explicit human approval for the demo.")]
 static string GetUsername() => Environment.UserName;
@@ -95,7 +98,7 @@ static async IAsyncEnumerable<AgentResponseUpdate> HandleApprovalRequestsMiddlew
         var text = approvalDecision.Response.Approved
             ? approvalDecision.Request.FunctionName switch
             {
-                "GetHostname" => $"Hostname: {GetHostname()}",
+                "GetHostname" => $"Hostname: {MaskAfterFourCharacters(GetHostname())}",
                 "GetUsername" => $"Username: {GetUsername()}",
                 _ => "Unknown approved function."
             }

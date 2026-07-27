@@ -8,6 +8,21 @@ A single-file .NET 10 ASP.NET Core app demonstrating:
 - Two browser choices: hostname or Windows username.
 - Azure AI Foundry / Azure OpenAI authentication using Azure CLI locally and Managed Identity when deployed.
 
+## Hostname approval flow
+
+Before requesting the hostname:
+
+![Identity Lab before requesting the hostname](docs/images/before-hostname-request.png)
+
+The agent pauses at a human approval checkpoint:
+
+![Identity Lab hostname approval checkpoint](docs/images/hostname-approval.png)
+
+After approving the tool call, the stream displays only the first four hostname
+characters and masks the remainder:
+
+![Identity Lab after approving the masked hostname](docs/images/after-hostname-approval.png)
+
 ## Prerequisites
 
 - .NET 10 SDK or later (file-based apps require .NET 10).
