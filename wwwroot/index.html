@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#07111f" />
+  <title>AG-UI Identity Lab</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --ink: #f4f7fb;
+      --muted: #93a4ba;
+      --panel: rgba(12, 27, 46, .76);
+      --panel-strong: rgba(16, 36, 60, .96);
+      --line: rgba(144, 176, 213, .16);
+      --cyan: #39dcff;
+      --violet: #9d7bff;
+      --green: #53e5a3;
+      --amber: #ffc857;
+      --danger: #ff718b;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .38);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 15%, rgba(49, 220, 255, .16), transparent 30rem),
+        radial-gradient(circle at 88% 20%, rgba(157, 123, 255, .18), transparent 32rem),
+        linear-gradient(145deg, #050b13 0%, #091728 52%, #07101d 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      opacity: .24;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+
+    button { font: inherit; }
+
+    .shell {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 54px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 52px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 780;
+      letter-spacing: -.02em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid rgba(57, 220, 255, .34);
+      border-radius: 12px;
+      color: var(--cyan);
+      background: rgba(57, 220, 255, .08);
+      box-shadow: inset 0 0 18px rgba(57, 220, 255, .08);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #b8c6d8;
+      background: rgba(6, 16, 28, .56);
+      font-size: .78rem;
+      font-weight: 650;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px var(--green);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px;
+      color: var(--cyan);
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(2.55rem, 7vw, 5.25rem);
+      line-height: .98;
+      letter-spacing: -.065em;
+    }
+
+    .gradient-text {
+      color: transparent;
+      background: linear-gradient(100deg, var(--cyan), #82f2d0 46%, #b69cff);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .hero-copy {
+      max-width: 430px;
+      margin: 0 0 6px auto;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.7;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 18px;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .panel::after {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      border-radius: inherit;
+      box-shadow: inset 0 1px rgba(255,255,255,.045);
+    }
+
+    .chooser { padding: 26px; }
+
+    .panel-kicker {
+      margin: 0 0 5px;
+      color: var(--cyan);
+      font-size: .72rem;
+      font-weight: 760;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.45rem;
+      letter-spacing: -.035em;
+    }
+
+    .panel-description {
+      margin: 8px 0 22px;
+      color: var(--muted);
+      font-size: .91rem;
+      line-height: 1.55;
+    }
+
+    .choices {
+      display: grid;
+      gap: 12px;
+    }
+
+    .choice {
+      display: grid;
+      grid-template-columns: 48px 1fr 28px;
+      gap: 14px;
+      align-items: center;
+      width: 100%;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      color: var(--ink);
+      text-align: left;
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .choice:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: rgba(57, 220, 255, .4);
+      background: rgba(57, 220, 255, .065);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .2);
+    }
+
+    .choice:focus-visible,
+    .decision:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .choice:disabled {
+      opacity: .52;
+      cursor: wait;
+    }
+
+    .choice-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border: 1px solid rgba(157, 123, 255, .23);
+      border-radius: 14px;
+      color: #c3afff;
+      background: rgba(157, 123, 255, .09);
+    }
+
+    .choice-icon svg { width: 23px; height: 23px; }
+
+    .choice-copy strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: .96rem;
+    }
+
+    .choice-copy span {
+      color: var(--muted);
+      font-size: .79rem;
+    }
+
+    .arrow {
+      color: #6f849d;
+      font-size: 1.25rem;
+      transition: transform .2s ease, color .2s ease;
+    }
+
+    .choice:hover .arrow { transform: translateX(3px); color: var(--cyan); }
+
+    .stream-panel {
+      display: flex;
+      min-height: 390px;
+      flex-direction: column;
+    }
+
+    .stream-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .protocol-badge {
+      padding: 6px 9px;
+      border: 1px solid rgba(83, 229, 163, .22);
+      border-radius: 8px;
+      color: var(--green);
+      background: rgba(83, 229, 163, .07);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .7rem;
+    }
+
+    #log {
+      display: flex;
+      min-height: 310px;
+      flex: 1;
+      align-items: flex-start;
+      padding: 28px 26px;
+      color: #cfdaea;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .86rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    #log.empty {
+      align-items: center;
+      justify-content: center;
+      color: #667b94;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .empty-state svg {
+      display: block;
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 12px;
+      color: #49627d;
+    }
+
+    .approval {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      padding: 22px;
+      place-items: center;
+      background: rgba(2, 8, 15, .7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      animation: fade-in .2s ease both;
+    }
+
+    .approval-card {
+      width: min(470px, 100%);
+      padding: 26px;
+      border: 1px solid rgba(255, 200, 87, .34);
+      border-radius: 24px;
+      background:
+        linear-gradient(150deg, rgba(255, 200, 87, .08), transparent 38%),
+        var(--panel-strong);
+      box-shadow: 0 34px 100px rgba(0,0,0,.58), 0 0 54px rgba(255, 200, 87, .08);
+      animation: rise-in .28s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .approval-icon {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 20px;
+      place-items: center;
+      border: 1px solid rgba(255, 200, 87, .28);
+      border-radius: 16px;
+      color: var(--amber);
+      background: rgba(255, 200, 87, .09);
+    }
+
+    .approval-icon svg { width: 27px; height: 27px; }
+
+    .approval-label {
+      margin: 0 0 7px;
+      color: var(--amber);
+      font-size: .72rem;
+      font-weight: 780;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .approval h2 { font-size: 1.65rem; }
+
+    #approvalText {
+      margin: 12px 0 22px;
+      color: #aebed0;
+      line-height: 1.6;
+    }
+
+    .approval-meta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 22px;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: #8fa2b9;
+      background: rgba(0,0,0,.16);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .73rem;
+    }
+
+    .approval-meta span:first-child { color: var(--green); }
+
+    .decisions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .decision {
+      padding: 13px 16px;
+      border-radius: 12px;
+      font-weight: 730;
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .decision:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+    .approve {
+      border: 1px solid rgba(83, 229, 163, .42);
+      color: #06150f;
+      background: linear-gradient(135deg, #73efb8, #42d898);
+    }
+
+    .reject {
+      border: 1px solid rgba(255, 113, 139, .28);
+      color: #ffc1cc;
+      background: rgba(255, 113, 139, .08);
+    }
+
+    .hidden { display: none !important; }
+
+    @keyframes fade-in { from { opacity: 0; } }
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(14px) scale(.98); }
+    }
+
+    @media (max-width: 960px) {
+      .hero, .workspace { grid-template-columns: 1fr; }
+      .hero { gap: 18px; margin-bottom: 26px; }
+      .hero-copy { margin-left: 0; }
+      .topbar { margin-bottom: 38px; }
+    }
+
+    @media (max-width: 520px) {
+      .shell { width: min(100% - 20px, 1080px); padding-top: 16px; }
+      .status { display: none; }
+      h1 { font-size: 2.8rem; }
+      .chooser { padding: 20px; }
+      .stream-head { padding-inline: 20px; }
+      #log { padding: 22px 20px; }
+      .decisions { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">⌁</span>
+        <span>Identity Lab</span>
+      </div>
+      <div class="status"><span class="status-dot"></span> Agent online</div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow"><span>✦</span> AG-UI × Microsoft Agent Framework</p>
+        <h1>Tools that wait<br /><span class="gradient-text">for your signal.</span></h1>
+      </div>
+      <p class="hero-copy">
+        Explore a human-in-the-loop agent that pauses before touching local identity data.
+        You stay in control of every tool call.
+      </p>
+    </section>
+
+    <section class="workspace">
+      <article class="panel chooser">
+        <p class="panel-kicker">01 · Choose an action</p>
+        <h2>What should the agent retrieve?</h2>
+        <p class="panel-description">Each action generates a reviewable approval request before execution.</p>
+
+        <div class="choices">
+          <button class="choice" data-choice="hostname">
+            <span class="choice-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <rect x="3" y="4" width="18" height="12" rx="2"></rect>
+                <path d="M8 20h8M12 16v4M7 9l2 2-2 2M11 13h4"></path>
+              </svg>
+            </span>
+            <span class="choice-copy"><strong>Get hostname</strong><span>Read this machine’s network name</span></span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </button>
+
+          <button class="choice" data-choice="username">
+            <span class="choice-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4.5 20c.8-4 3.3-6 7.5-6s6.7 2 7.5 6"></path>
+              </svg>
+            </span>
+            <span class="choice-copy"><strong>Get username</strong><span>Read the current Windows identity</span></span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </article>
+
+      <article class="panel stream-panel">
+        <div class="stream-head">
+          <div>
+            <p class="panel-kicker">02 · Live trace</p>
+            <h2>Agent stream</h2>
+          </div>
+          <span class="protocol-badge">SSE · AG-UI</span>
+        </div>
+        <div id="log" class="empty" aria-live="polite">
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M4 17l4-4 3 3 5-7 4 3"></path>
+              <path d="M4 4v16h16"></path>
+            </svg>
+            Choose an action to start the event stream.
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div id="approval" class="approval hidden" role="dialog" aria-modal="true" aria-labelledby="approvalTitle">
+    <div class="approval-card">
+      <div class="approval-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4z"></path>
+          <path d="M9.5 12l1.7 1.7 3.8-4"></path>
+        </svg>
+      </div>
+      <p class="approval-label">Human checkpoint</p>
+      <h2 id="approvalTitle">Approval required</h2>
+      <p id="approvalText"></p>
+      <div class="approval-meta"><span>●</span><span>Execution paused · awaiting your decision</span></div>
+      <div class="decisions">
+        <button id="approve" class="decision approve">Approve action</button>
+        <button id="reject" class="decision reject">Reject</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const log = document.querySelector('#log');
+const approval = document.querySelector('#approval');
+const approvalText = document.querySelector('#approvalText');
+const choiceButtons = [...document.querySelectorAll('[data-choice]')];
+let threadId = crypto.randomUUID();
+let pending = null;
+let assistantToolCall = null;
+let toolArgs = '';
+
+function setBusy(busy) {
+  choiceButtons.forEach(button => { button.disabled = busy; });
+}
+
+function write(text) {
+  if (log.classList.contains('empty')) {
+    log.classList.remove('empty');
+    log.textContent = '';
+  }
+  log.textContent += text;
+}
+
+function resetLog() {
+  log.classList.remove('empty');
+  log.textContent = '';
+}
+
+async function run(messages) {
+  resetLog();
+  pending = null;
+  assistantToolCall = null;
+  toolArgs = '';
+  approval.classList.add('hidden');
+  setBusy(true);
+
+  try {
+    const response = await fetch('/agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+      body: JSON.stringify({ threadId, runId: crypto.randomUUID(), messages })
+    });
+    if (!response.ok) throw new Error(`${response.status} ${await response.text()}`);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (true) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const chunks = buffer.split('\n\n');
+      buffer = chunks.pop();
+      for (const chunk of chunks) {
+        const line = chunk.split('\n').find(x => x.startsWith('data:'));
+        if (!line) continue;
+        handleEvent(JSON.parse(line.slice(5).trim()));
+      }
+      if (done) break;
+    }
+  } finally {
+    setBusy(false);
+  }
+}
+
+function handleEvent(event) {
+  if (event.type === 'TEXT_MESSAGE_CONTENT') write(event.delta || '');
+  if (event.type === 'TOOL_CALL_START' && event.toolCallName === 'request_approval') {
+    assistantToolCall = { id: event.toolCallId, name: event.toolCallName };
+    toolArgs = '';
+  }
+  if (event.type === 'TOOL_CALL_ARGS' && assistantToolCall) toolArgs += event.delta || '';
+  if (event.type === 'TOOL_CALL_END' && assistantToolCall) {
+    try {
+      const args = JSON.parse(toolArgs);
+      const request = typeof args.request === 'string' ? JSON.parse(args.request) : args.request;
+      pending = { id: assistantToolCall.id, request };
+      approvalText.textContent = request.message || `Approve ${request.function_name}?`;
+      approval.classList.remove('hidden');
+      document.querySelector('#approve').focus();
+    } catch (error) {
+      write(`\nApproval payload error: ${error.message}`);
+    }
+  }
+  if (event.type === 'RUN_ERROR') write(`\nError: ${event.message || 'Run failed'}`);
+}
+
+async function decide(approved) {
+  if (!pending) return;
+  const current = pending;
+  pending = null;
+  approval.classList.add('hidden');
+
+  const approvalResponse = JSON.stringify({
+    approval_id: current.request.approval_id,
+    approved
+  });
+
+  await run([
+    {
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: '',
+      toolCalls: [{
+        id: current.id,
+        type: 'function',
+        function: {
+          name: 'request_approval',
+          arguments: JSON.stringify({ request: JSON.stringify(current.request) })
+        }
+      }]
+    },
+    {
+      id: crypto.randomUUID(),
+      role: 'tool',
+      toolCallId: current.id,
+      content: approvalResponse
+    }
+  ]);
+}
+
+choiceButtons.forEach(button => button.addEventListener('click', () => {
+  threadId = crypto.randomUUID();
+  const prompt = button.dataset.choice === 'hostname'
+    ? 'The user chose option 1. Use GetHostname and return its result.'
+    : 'The user chose option 2. Use GetUsername and return its result.';
+  run([{ id: crypto.randomUUID(), role: 'user', content: prompt }])
+    .catch(error => write(`\nError: ${error.message}`));
+}));
+
+document.querySelector('#approve').onclick = () =>
+  decide(true).catch(error => write(`\nError: ${error.message}`));
+document.querySelector('#reject').onclick = () =>
+  decide(false).catch(error => write(`\nError: ${error.message}`));
+</script>
+</body>
+</html>
