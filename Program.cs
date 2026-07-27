@@ -58,9 +58,13 @@ AITool[] tools =
 ];
 #pragma warning restore MEAI001
 
-TokenCredential credential = app.Environment.IsDevelopment()
-    ? new AzureCliCredential()
-    : new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned);
+var useManagedIdentity = bool.TryParse(
+    app.Configuration["AZURE_USE_MANAGED_IDENTITY"],
+    out var managedIdentityEnabled) && managedIdentityEnabled;
+
+TokenCredential credential = useManagedIdentity
+    ? new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned)
+    : new AzureCliCredential();
 
 var baseAgent = new AIProjectClient(new Uri(endpoint), credential)
     .AsAIAgent(

@@ -30,9 +30,11 @@ characters and masks the remainder:
 - Azure CLI installed and authenticated: `az login`.
 - Your identity has permission to invoke the model (for Azure OpenAI, typically `Cognitive Services OpenAI Contributor`).
 
-When the application runs in the `Development` environment, it authenticates with
-the account selected by `az login`. In other environments, it uses the Azure host's
-Managed Identity, which must be enabled and granted permission to invoke the model.
+By default, the app authenticates with the account selected by `az login`. This
+keeps local file-based runs deterministic regardless of the ASP.NET environment.
+For an Azure-hosted deployment, set `AZURE_USE_MANAGED_IDENTITY=true`; the host's
+system-assigned Managed Identity must be enabled and granted permission to invoke
+the model.
 
 ## Configure
 
@@ -48,6 +50,12 @@ If you are using a direct Azure OpenAI resource endpoint instead, use:
 ```bash
 export AZURE_OPENAI_ENDPOINT="https://<resource>.openai.azure.com/"
 export AZURE_OPENAI_DEPLOYMENT_NAME="<your-model-deployment-name>"
+```
+
+For a deployed Azure host using system-assigned Managed Identity, also set:
+
+```bash
+export AZURE_USE_MANAGED_IDENTITY="true"
 ```
 
 On Windows PowerShell, the equivalent is:
